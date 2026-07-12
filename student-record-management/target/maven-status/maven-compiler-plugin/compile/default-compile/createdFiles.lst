@@ -1,0 +1,8 @@
+com\student\entity\Activity.class
+com\student\repository\StudentRepository.class
+com\student\controller\ActivityController.class
+com\student\repository\ActivityRepository.class
+com\student\StudentRecordManagementApplication.class
+com\student\entity\Student.class
+com\student\controller\HomeController.class
+com\student\controller\StudentController.class

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAMS - Student Activity Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+    body {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        background-color: #f4f6fc;
+    }
+
+    #deptChart {
+        width: 100% !important;
+        height: 100% !important;
+    }
+        
+    </style>
+</head>
+<body class="flex min-h-screen">
+
+    <aside class="w-64 bg-[#14163c] text-white flex flex-col justify-between p-5 shrink-0">
+        <div>
+            <div class="flex items-center gap-3 mb-8 px-2">
+                <div class="bg-white text-[#14163c] p-2 rounded-xl text-xl">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <span class="text-2xl font-bold tracking-wide">SAMS</span>
+            </div>
+
+            <nav class="space-y-1">
+                <a href="#" class="flex items-center gap-4 px-4 py-3 bg-[#635bff] text-white rounded-xl font-medium transition">
+                    <i class="fa-solid fa-house w-5 text-center"></i> Dashboard
+                </a>
+                <a href="/students" class="flex items-center gap-4 px-4 py-3 text-gray-400 hover:text-white rounded-xl font-medium transition">
+                    <i class="fa-solid fa-users w-5 text-center"></i> Students
+                </a>
+                <a href="/analytics" class="flex items-center gap-4 px-4 py-3 text-gray-400 hover:text-white rounded-xl font-medium transition">
+                    <i class="fa-solid fa-chart-simple w-5 text-center"></i> Analytics
+                </a>
+                <a href="/addStudent" class="flex items-center gap-4 px-4 py-3 text-gray-400 hover:text-white rounded-xl font-medium transition">
+                    <i class="fa-solid fa-user-plus w-5 text-center"></i> Add Student
+                </a>
+                <a href="/login" class="flex items-center gap-4 px-4 py-3 text-red-400 hover:text-red-300 rounded-xl font-medium transition mt-4">
+                    <i class="fa-solid fa-right-from-bracket w-5 text-center"></i> Logout
+                </a>
+            </nav>
+        </div>
+
+        <div class="border-t border-gray-700 pt-4 text-center">
+            <p class="text-xs text-gray-400">Academic Year</p>
+            <p class="text-sm font-semibold text-gray-200 mt-1">2025 - 2026</p>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col min-w-0">
+        
+        <header class="bg-white border-b border-gray-100 px-8 py-4 flex justify-between items-center shrink-0">
+            <div class="flex items-center gap-4">
+                <button class="text-gray-500 hover:text-gray-700 text-xl"><i class="fa-solid fa-bars"></i></button>
+                <h1 class="text-xl font-bold text-gray-800">Student Record Management System</h1>
+            </div>
+            <div class="flex items-center gap-6">
+                <div class="flex items-center gap-3 border-l pl-6 border-gray-200">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=100&auto=format&fit=crop" class="w-9 h-9 rounded-full object-cover" alt="Admin">
+                    <div>
+                        <p class="text-sm font-bold text-gray-800 leading-none">Admin User</p>
+                        <p class="text-xs text-gray-500 mt-1">Administrator</p>
+                    </div>
+                    <i class="fa-solid fa-chevron-down text-xs text-gray-400 ml-1"></i>
+                </div>
+            </div>
+        </header>
+
+        <div class="p-8 space-y-6 overflow-y-auto flex-1">
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-gradient-to-br from-[#6b52ff] to-[#927eff] rounded-2xl p-6 text-white flex items-center justify-between shadow-sm">
+                    <div>
+                        <p class="text-sm font-medium opacity-80">Total Students</p>
+                        <p class="text-4xl font-bold mt-1" th:text="${totalStudents}">120</p>
+                        <p class="text-xs mt-2 opacity-90">Students in Database</p>
+                    </div>
+                    <div class="bg-white/10 p-4 rounded-2xl text-2xl"><i class="fa-solid fa-graduation-cap"></i></div>
+                </div>
+
+                <div class="bg-gradient-to-br from-[#00a896] to-[#02c39a] rounded-2xl p-6 text-white flex items-center justify-between shadow-sm">
+                    <div>
+                        <p class="text-sm font-medium opacity-80">Students Control</p>
+                        <p class="text-xl font-bold mt-1">Manage Records</p>
+                        <a href="/students" class="inline-block mt-3 text-xs bg-white text-[#00a896] font-bold px-4 py-2 rounded-xl hover:bg-opacity-90 transition">
+                            Open Dashboard <i class="fa-solid fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                    <div class="bg-white/10 p-4 rounded-2xl text-2xl"><i class="fa-solid fa-clipboard-list"></i></div>
+                </div>
+
+                <div class="bg-gradient-to-br from-[#f39c12] to-[#f1c40f] rounded-2xl p-6 text-white flex items-center justify-between shadow-sm">
+                    <div>
+                        <p class="text-sm font-medium opacity-80">Quick Actions</p>
+                        <p class="text-xl font-bold mt-1">Create New Record</p>
+                        <a href="/addStudent" class="inline-block mt-3 text-xs bg-white text-[#f39c12] font-bold px-4 py-2 rounded-xl hover:bg-opacity-90 transition">
+                            Add Student Now <i class="fa-solid fa-plus ml-1"></i>
+                        </a>
+                    </div>
+                    <div class="bg-white/10 p-4 rounded-2xl text-2xl"><i class="fa-solid fa-user-plus"></i></div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-50 lg:col-span-7">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-md font-bold text-gray-800 flex items-center gap-2">
+                            <i class="fa-solid fa-chart-bar text-gray-500"></i> Department Wise Student Count
+                        </h2>
+                        <a href="/analytics" class="text-xs text-[#635bff] font-bold bg-[#635bff]/10 px-3 py-1.5 rounded-lg hover:bg-[#635bff]/20 transition">
+                            <i class="fa-solid fa-chart-pie mr-1"></i> View Analytics
+                        </a>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-xs font-semibold text-gray-700 mb-1.5">
+                                <span>Computer Science (CSE)</span>
+                                <span class="font-bold text-gray-900" id="cseVal" th:text="${cseCount}">0</span>
+                            </div>
+                            <div class="w-full bg-gray-100 h-2.5 rounded-full">
+                                <div class="bg-[#6b52ff] h-2.5 rounded-full dynamic-bar" id="cseBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs font-semibold text-gray-700 mb-1.5">
+                                <span>Electronics & Communication (ECE)</span>
+                                <span class="font-bold text-gray-900" id="eceVal" th:text="${eceCount}">0</span>
+                            </div>
+                            <div class="w-full bg-gray-100 h-2.5 rounded-full">
+                                <div class="bg-[#00a896] h-2.5 rounded-full dynamic-bar" id="eceBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs font-semibold text-gray-700 mb-1.5">
+                                <span>Electrical & Electronics (EEE)</span>
+                                <span class="font-bold text-gray-900" id="eeeVal" th:text="${eeeCount}">0</span>
+                            </div>
+                            <div class="w-full bg-gray-100 h-2.5 rounded-full">
+                                <div class="bg-[#f39c12] h-2.5 rounded-full dynamic-bar" id="eeeBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs font-semibold text-gray-700 mb-1.5">
+                                <span>Information Technology (IT)</span>
+                                <span class="font-bold text-gray-900" id="itVal" th:text="${itCount}">0</span>
+                            </div>
+                            <div class="w-full bg-gray-100 h-2.5 rounded-full">
+                                <div class="bg-[#2ec4b6] h-2.5 rounded-full dynamic-bar" id="itBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs font-semibold text-gray-700 mb-1.5">
+                                <span>Mechanical Engineering (MECH)</span>
+                                <span class="font-bold text-gray-900" id="mechVal" th:text="${mechCount}">0</span>
+                            </div>
+                            <div class="w-full bg-gray-100 h-2.5 rounded-full">
+                                <div class="bg-[#e91e63] h-2.5 rounded-full dynamic-bar" id="mechBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs font-semibold text-gray-700 mb-1.5">
+                                <span>Civil Engineering (CIVIL)</span>
+                                <span class="font-bold text-gray-900" id="civilVal" th:text="${civilCount}">0</span>
+                            </div>
+                            <div class="w-full bg-gray-100 h-2.5 rounded-full">
+                                <div class="bg-[#9b59b6] h-2.5 rounded-full dynamic-bar" id="civilBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-50 lg:col-span-5 flex flex-col justify-between">
+                    <div>
+                        <h2 class="text-md font-bold text-gray-800 flex items-center gap-2 mb-4">
+                            <i class="fa-solid fa-chart-pie text-gray-500"></i> Department Distribution
+                        </h2>
+                    </div>
+
+                    <div class="flex items-center gap-4 justify-between flex-1">
+                        <div class="w-36 h-36 relative flex shrink-0 items-center justify-center">
+                            <canvas id="deptChart"></canvas>
+                            <div class="absolute text-center">
+                                <p class="text-xl font-black text-gray-800 leading-none" th:text="${totalStudents}">0</p>
+                                <p class="text-[10px] text-gray-400 font-semibold mt-0.5">Total</p>
+                            </div>
+                        </div>
+
+                        <div class="flex-1 space-y-1.5 text-xs font-semibold text-gray-600 pl-4">
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#6b52ff]"></span><span>CSE</span></div>
+                                <span class="text-gray-800" th:text="${cseCount}">0</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#00a896]"></span><span>ECE</span></div>
+                                <span class="text-gray-800" th:text="${eceCount}">0</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#f39c12]"></span><span>EEE</span></div>
+                                <span class="text-gray-800" th:text="${eeeCount}">0</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#2ec4b6]"></span><span>IT</span></div>
+                                <span class="text-gray-800" th:text="${itCount}">0</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#e91e63]"></span><span>MECH</span></div>
+                                <span class="text-gray-800" th:text="${mechCount}">0</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#9b59b6]"></span><span>CIVIL</span></div>
+                                <span class="text-gray-800" th:text="${civilCount}">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Thymeleaf values mapped via innerText context extraction
+            const cse = parseInt(document.getElementById('cseVal').innerText) || 0;
+            const ece = parseInt(document.getElementById('eceVal').innerText) || 0;
+            const eee = parseInt(document.getElementById('eeeVal').innerText) || 0;
+            const it = parseInt(document.getElementById('itVal').innerText) || 0;
+            const mech = parseInt(document.getElementById('mechVal').innerText) || 0;
+            const civil = parseInt(document.getElementById('civilVal').innerText) || 0;
+
+            const total = cse + ece + eee + it + mech + civil || 1; // Prevent 0 division
+
+            // Set progress bar widths dynamically based on calculations
+            document.getElementById('cseBar').style.width = ((cse / total) * 100) + '%';
+            document.getElementById('eceBar').style.width = ((ece / total) * 100) + '%';
+            document.getElementById('eeeBar').style.width = ((eee / total) * 100) + '%';
+            document.getElementById('itBar').style.width = ((it / total) * 100) + '%';
+            document.getElementById('mechBar').style.width = ((mech / total) * 100) + '%';
+            document.getElementById('civilBar').style.width = ((civil / total) * 100) + '%';
+
+            // Setup Donut Pie Chart 
+            const ctx = document.getElementById('deptChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['CSE', 'ECE', 'EEE', 'IT', 'MECH', 'CIVIL'],
+                    datasets: [{
+                        data: [cse, ece, eee, it, mech, civil],
+                        backgroundColor: ['#6b52ff', '#00a896', '#f39c12', '#2ec4b6', '#e91e63', '#9b59b6'],
+                        borderWidth: 0,
+                        cutout: '75%'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: true }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
